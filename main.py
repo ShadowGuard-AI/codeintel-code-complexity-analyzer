@@ -48,7 +48,10 @@ def calculate_cyclomatic_complexity(filepath, include_imports=False):
 
     Returns:
         list: A list of tuples containing the function/class name, complexity score,
-              line number, and end line number. Returns an empty list if there's an error.
+              line number, and end line number. Returns None when the
+              file could not be read or parsed, so the caller can tell
+              an error apart from a file that simply defines nothing
+              radon reports, which legitimately returns an empty list.
     """
     try:
         with open(filepath, "r", encoding="utf-8") as f:
@@ -69,13 +72,13 @@ def calculate_cyclomatic_complexity(filepath, include_imports=False):
 
     except FileNotFoundError:
         logging.error(f"File not found: {filepath}")
-        return []
+        return None
     except SyntaxError as e:
         logging.error(f"Syntax error in {filepath}: {e}")
-        return []
+        return None
     except Exception as e:
         logging.error(f"An unexpected error occurred: {e}")
-        return []
+        return None
 
 
 def calculate_raw_metrics(filepath):
@@ -86,7 +89,8 @@ def calculate_raw_metrics(filepath):
         filepath (str): Path to the Python file.
 
     Returns:
-        dict: A dictionary containing raw metrics. Returns an empty dictionary if there's an error.
+        dict: A dictionary containing raw metrics. Returns None on
+        error, for the same reason as the complexity function above.
     """
     try:
         with open(filepath, "r", encoding="utf-8") as f:
@@ -102,10 +106,10 @@ def calculate_raw_metrics(filepath):
         }
     except FileNotFoundError:
         logging.error(f"File not found: {filepath}")
-        return {}
+        return None
     except Exception as e:
         logging.error(f"An unexpected error occurred: {e}")
-        return {}
+        return None
 
 def main():
     """
@@ -120,6 +124,9 @@ def main():
 
     complexity_results = calculate_cyclomatic_complexity(args.filepath, args.include_imports)
 
+    if complexity_results is None:
+        sys.exit(1)
+
     if complexity_results:
         print(f"Code Complexity Analysis for {args.filepath}:\n")
         for name, complexity, lineno, endline in complexity_results:
@@ -130,6 +137,8 @@ def main():
 
     if args.report_raw:
         raw_metrics = calculate_raw_metrics(args.filepath)
+        if raw_metrics is None:
+            sys.exit(1)
         if raw_metrics:
             print("Raw Code Metrics:\n")
             for metric, value in raw_metrics.items():
