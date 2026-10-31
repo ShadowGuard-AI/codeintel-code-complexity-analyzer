@@ -1,7 +1,7 @@
 ![Banner](banner.png)
 
 # codeintel-Code-Complexity-Analyzer
-Calculates cyclomatic complexity and other code complexity metrics for Python code. Uses the `ast` module to parse the code and calculate complexity scores based on control flow. Reports on functions or classes exceeding defined complexity thresholds. Can use `radon` library for complexity calculation. - Focused on Tools for static code analysis, vulnerability scanning, and code quality assurance
+Calculates cyclomatic complexity and other code complexity metrics for Python code. Passes the original file text to the `radon` library for complexity calculation, so reported line numbers are true source line numbers. Reports only functions or classes exceeding the defined complexity threshold, and prints a plain line saying so when no block exceeds it. - Focused on Tools for static code analysis, vulnerability scanning, and code quality assurance
 
 ## Install
 `git clone https://github.com/ShadowStrikeHQ/codeintel-code-complexity-analyzer`
@@ -13,7 +13,6 @@ Calculates cyclomatic complexity and other code complexity metrics for Python co
 - `-h`: Show help message and exit
 - `--threshold`: Complexity threshold for reporting functions/classes. Defaults to 10.
 - `--report-raw`: No description provided
-- `--include-imports`: Include import statements in the code complexity calculation.
 
 ## License
 Copyright (c) ShadowStrikeHQ

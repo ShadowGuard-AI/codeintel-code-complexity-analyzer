@@ -1,5 +1,4 @@
 import argparse
-import ast
 import logging
 import sys
 import radon.complexity as cc
@@ -30,21 +29,18 @@ def setup_argparse():
         action="store_true",
         help="Also report raw code metrics (lines of code, comments, etc.)"
     )
-    parser.add_argument(
-        "--include-imports",
-        action="store_true",
-        help="Include import statements in the code complexity calculation."
-    )
     return parser.parse_args()
 
 
-def calculate_cyclomatic_complexity(filepath, include_imports=False):
+def calculate_cyclomatic_complexity(filepath):
     """
     Calculates the cyclomatic complexity of functions and classes in a Python file.
 
+    The original file text is always passed to radon as read, so the
+    line numbers radon reports are true source line numbers.
+
     Args:
         filepath (str): Path to the Python file.
-        include_imports (bool): Whether to include import statements during parsing.
 
     Returns:
         list: A list of tuples containing the function/class name, complexity score,
@@ -57,16 +53,6 @@ def calculate_cyclomatic_complexity(filepath, include_imports=False):
         with open(filepath, "r", encoding="utf-8") as f:
             code = f.read()
 
-        if not include_imports:
-            tree = ast.parse(code)
-            # Remove Import and ImportFrom nodes from the AST to exclude them from complexity analysis.
-            new_body = []
-            for node in tree.body:
-                if not isinstance(node, (ast.Import, ast.ImportFrom)):
-                    new_body.append(node)
-            tree.body = new_body
-            code = ast.unparse(tree)
-        
         results = cc.cc_visit(code)
         return [(res.name, res.complexity, res.lineno, res.endline) for res in results]
 
@@ -122,18 +108,21 @@ def main():
         logging.error("Complexity threshold must be a positive integer.")
         sys.exit(1)
 
-    complexity_results = calculate_cyclomatic_complexity(args.filepath, args.include_imports)
+    complexity_results = calculate_cyclomatic_complexity(args.filepath)
 
     if complexity_results is None:
         sys.exit(1)
 
-    if complexity_results:
+    # The threshold is a real filter: only blocks above it are listed.
+    exceeding = [result for result in complexity_results if result[1] > args.threshold]
+    if exceeding:
         print(f"Code Complexity Analysis for {args.filepath}:\n")
-        for name, complexity, lineno, endline in complexity_results:
+        for name, complexity, lineno, endline in exceeding:
             print(f"  - {name} (lines {lineno}-{endline}): Complexity = {complexity}")
-            if complexity > args.threshold:
-                print(f"    Warning: Complexity exceeds threshold ({args.threshold})!")
+            print(f"    Warning: Complexity exceeds threshold ({args.threshold})!")
         print("\n")
+    else:
+        print(f"No functions or classes exceed the complexity threshold ({args.threshold}).")
 
     if args.report_raw:
         raw_metrics = calculate_raw_metrics(args.filepath)
@@ -144,9 +133,6 @@ def main():
             for metric, value in raw_metrics.items():
                 print(f"  - {metric}: {value}")
             print("\n")
-
-    if not complexity_results and not args.report_raw:
-        logging.info("No results to display.")
 
 if __name__ == "__main__":
     # Example usage (from command line):
