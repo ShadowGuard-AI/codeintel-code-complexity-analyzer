@@ -114,6 +114,9 @@ def main():
         sys.exit(1)
 
     # The threshold is a real filter: only blocks above it are listed.
+    # I use a strict greater than here, so a function sitting exactly
+    # on the threshold is not listed. Set the threshold one lower if
+    # the boundary case itself is what you want to see.
     exceeding = [result for result in complexity_results if result[1] > args.threshold]
     if exceeding:
         print(f"Code Complexity Analysis for {args.filepath}:\n")
@@ -125,9 +128,15 @@ def main():
         print(f"No functions or classes exceed the complexity threshold ({args.threshold}).")
 
     if args.report_raw:
+        # I read the file a second time for this instead of passing the
+        # text across. If the file changes between the two reads, the raw
+        # counts can describe a different version than the scores above.
         raw_metrics = calculate_raw_metrics(args.filepath)
         if raw_metrics is None:
             sys.exit(1)
+        # I only print when the dict is non empty. It never is empty on
+        # success in practice, since analyze always returns counts, so a
+        # silent skip here would point at the metrics call, not the file.
         if raw_metrics:
             print("Raw Code Metrics:\n")
             for metric, value in raw_metrics.items():
