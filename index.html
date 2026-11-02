@@ -3,164 +3,23 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Codeintel Code Complexity Analyzer: what it is, how it runs, where it stops</title>
-<meta name="description" content="Codeintel Code Complexity Analyzer is one of my projects. The README in the repo is short, so this page sticks to what the files themselves show.">
-<style>
-:root {
-  --bg: #0e2a22; --panel: #14382d; --ink: #eef0e2;
-  --mut: #1b4b3c;
-  --acc: #f4d06f; --acc2: #ec8a7a;
-  --line: #14382d;
-}
-* { box-sizing: border-box; }
-body { margin: 0; background: var(--bg); color: var(--ink);
-  font-family: 'Palatino Linotype', Palatino, serif; line-height: 1.55; }
-code, pre, .mono { font-family: 'Menlo', monospace; }
-a { color: var(--acc2); }
-.hero { padding: 3rem 6vw 1rem; }
-.hero img.banner { width: 100%; height: auto; border: 1px solid var(--line);
-  border-radius: 10px; }
-.logo { width: 92px; height: 92px; border-radius: 18px;
-  border: 1px solid var(--line); }
-h1 { font-size: 2.4rem; margin: 0.4em 0 0.1em; }
-h2 { border-bottom: 2px solid var(--acc); padding-bottom: 0.2em;
-  margin-top: 2em; }
-.lede { font-size: 1.15rem; max-width: 62ch; }
-main { padding: 0 6vw 3rem; max-width: 1180px; margin: 0 auto; }
-.grid { display: grid; gap: 1rem;
-  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); }
-.card { background: var(--panel); border: 1px solid var(--line);
-  border-radius: 12px; padding: 1rem 1.2rem; }
-.card.pop { animation: rise 0.7s ease both; }
-@keyframes rise { from { opacity: 0; transform: translateY(14px); }
-  to { opacity: 1; transform: none; } }
-pre.code { background: #101014; color: #e8e6df; padding: 1rem 1.2rem;
-  border-radius: 12px; overflow-x: auto; font-size: 0.86rem;
-  border-left: 5px solid var(--acc); }
-table { border-collapse: collapse; width: 100%; }
-td, th { border-bottom: 1px solid var(--line); padding: 0.45rem 0.6rem;
-  text-align: left; }
-.shots { display: grid; gap: 1rem;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
-.shots img { width: 100%; height: auto; border: 1px solid var(--line);
-  border-radius: 10px; background: #f4f1e8; }
-footer { padding: 2rem 6vw; border-top: 1px solid var(--line);
-  color: var(--mut); }
-.rail { display: flex; gap: 1.2rem; align-items: flex-start; }
-.rail nav { position: sticky; top: 1rem; min-width: 180px; }
-@media (max-width: 760px) { .rail { flex-direction: column; }
-  .rail nav { position: static; } }
-@media (prefers-reduced-motion: reduce) {
-  .card.pop { animation: none; } * { scroll-behavior: auto; } }
-</style>
+<title>codeintel-code-complexity-analyzer: The Lighthouse Lens Polishing Loft</title>
+<meta name="description" content="A ship log kept down one ruled column: a lens taken apart pane by pane so each piece can be judged, as a file is taken apart block by block.">
+<style>@font-face{font-family:'Barlow Semi Condensed';src:url('fonts/BarlowSemiCondensed.ttf') format('truetype');}@font-face{font-family:'Barlow';src:url('fonts/Barlow.ttf') format('truetype');}:root{--hb:#1f4e79;--cream:#f5edd6;--rust:#a33b2e;--ink:#1c1c1c}*{box-sizing:border-box}body{margin:0;background:var(--hb);color:var(--ink);font-family:'Barlow',sans-serif;line-height:1.65;border-left:8px solid var(--rust)}h1,h2,h3{font-family:'Barlow Semi Condensed',sans-serif;color:var(--hb)}.heroimg{width:100%;height:52vh;object-fit:cover;display:block}.in,main,footer{max-width:1000px;margin:0 auto;padding:1rem 5vw 2rem}.logo{width:230px;background:#e9e4d2}.btn{display:inline-block;text-decoration:none;font-family:'Barlow Semi Condensed',sans-serif;color:var(--hb);background:#d8cfb8;border:2px solid #b08d5f;border-radius:46% 54% 52% 48%/58% 60% 40% 42%;outline:2px solid var(--hb);outline-offset:3px;padding:.7rem 1.2rem;margin:.3rem;transition:background .15s,transform .15s}.btn:hover{background:var(--cream)}.btn:active{transform:translateY(3px)}.btn:focus-visible{outline:4px solid var(--rust);outline-offset:5px}nav{display:flex;gap:.6rem;flex-wrap:wrap;margin:1rem 0}a{color:var(--hb)}a::before{content:'\1F6AE  ';font-size:.8em}.panel{background:var(--cream);border-top:3px double var(--hb);padding:.4rem 1.5rem 1.4rem;margin:1.6rem 0}.panel:first-child::before{content:'';display:block;width:44px;height:30px;border:2px solid var(--hb);border-radius:50%;margin:.6rem 0}pre{background:#22303c;color:var(--cream);padding:1rem;overflow-x:auto;font-size:1.05rem}.big{font-size:1.35rem}.div{height:10px;border-top:2px solid var(--hb);margin:1.4rem 0}.callout{background:#efe6cc;border-left:8px solid var(--rust);padding:.2rem 1.2rem 1rem;margin:1.2rem 0}.entry{display:flex;gap:1rem;padding:.5rem 0;border-bottom:1px solid rgba(28,28,28,.25)}.entry b{font-family:'Barlow Semi Condensed',sans-serif;min-width:130px}.rust{color:var(--rust)}footer{color:var(--cream)}footer p{color:var(--cream)}header .in p,header h1{color:var(--cream)}</style>
 </head>
-<body class="layout-grid">
-<!-- This page exists for codeintel-code-complexity-analyzer alone: the layout (console-grid),
-     the colors, and the type were picked for this project, not
-     shared with the other project pages. The code block below is
-     copied from the file it names, line for line. If it looks
-     plain, that is because the project is plain, and I would
-     rather the page match the project than dress it up. The one
-     thing I will not do here is oversell: what this project does
-     not do is stated on the page, not hidden from it. -->
+<body>
 <header class="hero">
-  <img class="logo" src="assets/logo.png" alt="Codeintel Code Complexity Analyzer logo">
-  <img class="banner" src="assets/banner.png" alt="">
-  <h1>Codeintel Code Complexity Analyzer</h1>
-  <p class="mono"><a href="https://github.com/ShadowGuard-AI/codeintel-code-complexity-analyzer">github.com/ShadowGuard-AI/codeintel-code-complexity-analyzer</a></p>
+<img class="heroimg" src="assets/intro-banner.png" alt="Loft with no lettering: nearest Fresnel pane on its trestle, panes in sequence on sail cream cloth, bench with tide table booklet and brass oil lantern, harbour through tall windows">
+<div class="in">
+<img class="logo" src="assets/logo.png" alt="One Fresnel pane upright on a polishing trestle with a folded cloth at its foot, an unlit brass lantern set aside, and the name in harbour blue below">
+<h1>codeintel-code-complexity-analyzer</h1>
+<p>A ship log kept down one ruled column: a lens taken apart pane by pane so each piece can be judged, as a file is taken apart block by block.</p>
+<nav><a class="btn" href="#s0">Calculate the Complexity</a><a class="btn" href="#s1">Set the Threshold</a><a class="btn" href="#s2">Show Help</a></nav>
+</div>
 </header>
-
 <main>
-  <section class="rail">
-    <nav aria-label="on this page">
-      <p class="mono"><a href="#run">Run it</a><br>
-      <a href="#files">The files</a><br>
-      <a href="#sheets">The sheets</a><br>
-      <a href="https://github.com/ShadowGuard-AI/codeintel-code-complexity-analyzer">The repo</a></p>
-    </nav>
-    <div>
-      <p class="lede">Codeintel Code Complexity Analyzer is one of my projects. The README in the repo is short, so this page sticks to what the files themselves show.</p>
-      <div class="grid">
-        <div class="card pop"><h3>What it is</h3>
-          <p>Codeintel Code Complexity Analyzer: 5 files, 175 counted
-          lines across Python 155, Markdown 19, Text 1. One job, done in the
-          open, in files you can read.</p></div>
-        <div class="card pop"><h3>The biggest piece</h3>
-          <p><code>main.py</code> carries the most
-          lines. If the project grows, that file is where the growth
-          lands first, for better or worse.</p></div>
-        <div class="card pop"><h3>The honest gap</h3>
-          <p>No test files yet. That is the honest gap, and the roadmap in the visuals folder says what the first one should cover.</p></div>
-      </div>
-      <section id="run">
-        <h2>Run it</h2>
-        <p>The repo README has the exact commands for this one. The
-        shape is the shape for most of my projects: clone it, read the
-        top file first so you know what will happen, then run it on
-        something you do not mind breaking.</p>
-        <p class="mono">$ git clone https://github.com/ShadowGuard-AI/codeintel-code-complexity-analyzer.git<br>$ cd codeintel-code-complexity-analyzer</p>
-      </section>
-      
-  <section aria-label="real code">
-    <h2>The code, as it sits in the repo</h2>
-    <p>From <code>main.py</code>, line 10 on. I did
-    not tidy it for the page. What you see is what the file has.</p>
-    <pre class="code"><code>
-
-def setup_argparse():
-    &quot;&quot;&quot;
-    Sets up the argument parser for the command-line interface.
-    &quot;&quot;&quot;
-    parser = argparse.ArgumentParser(
-        description=&quot;Calculates code complexity metrics for Python code.&quot;
-    )
-    parser.add_argument(
-        &quot;filepath&quot;, help=&quot;Path to the Python file to analyze.&quot;
-    )
-    parser.add_argument(
-        &quot;--threshold&quot;,
-        type=int,
-        default=10,
-        help=&quot;Complexity threshold for reporting functions/classes. Defaults to 10.&quot;,
-    )
-    parser.add_argument(
-        &quot;--report-raw&quot;,
-        action=&quot;store_true&quot;,
-        help=&quot;Also report raw code metrics (lines of code, comments, etc.)&quot;</code></pre>
-  </section>
-      <section id="files">
-        <h2>The files that matter</h2>
-        <table><tr><th>File</th><th>Lines</th></tr>
-        <tr><td><code>main.py</code></td><td>155</td></tr>
-        <tr><td><code>README.md</code></td><td>19</td></tr>
-        <tr><td><code>requirements.txt</code></td><td>1</td></tr>
-        <tr><td><code>banner.png</code></td><td>0</td></tr>
-        <tr><td><code>logo.png</code></td><td>0</td></tr>
-        </table>
-        <p>Names doing the work: <span class="mono">setup_argparse, calculate_cyclomatic_complexity, calculate_raw_metrics, main</span>.</p>
-      </section>
-      <section id="sheets">
-        <h2>Drawn by hand</h2>
-        <p>I sketch my projects on notebook paper so I have to
-        understand them well enough to draw them. The full set,
-        with the counts and how they were counted, is the
-        <a href="https://github.com/ShadowGuard-AI/codeintel-code-complexity-analyzer/tree/main/codeintel-code-complexity-analyzer-Visuals">codeintel-code-complexity-analyzer-Visuals</a>
-        folder in the repo. Nothing is drawn over the binder holes.
-        That is a rule, not a style.</p>
-        <div class="shots">
-          <img src="assets/architecture.png" alt="Hand drawn architecture sheet for Codeintel Code Complexity Analyzer">
-          <img src="assets/flowchart.png" alt="Hand drawn flowchart sheet for Codeintel Code Complexity Analyzer">
-          <img src="assets/product-map.png" alt="Hand drawn product map sheet for Codeintel Code Complexity Analyzer">
-        </div>
-      </section>
-    </div>
-  </section>
+<section class="panel" id="s0"><h2>One File Text</h2><p>codeintel-code-complexity-analyzer calculates cyclomatic complexity and other code complexity metrics for Python code.</p><div class="callout"><h3>The Original Text Is Passed On</h3><p>The original file text is passed to the radon library for calculation, whereby reported line numbers remain true source line numbers. Only functions or classes exceeding the defined complexity threshold are reported, and a plain line is printed when no block exceeds it.</p></div><h2>True Line Numbers</h2><p>Reported line numbers are true source line numbers, because the original file text is what radon receives.</p></section><div class="div"></div><section class="panel" id="s1"><h2>Install, One Step Only</h2><pre>git clone https://github.com/ShadowStrikeHQ/codeintel-code-complexity-analyzer</pre><p>That is the single step the README gives. No directory change step, no pip install step, and no requirements file is mentioned there. The line names ShadowStrikeHQ, and that fault is recorded in the DEFECTS record within the README rather than corrected on this page.</p></section><div class="div"></div><section class="panel" id="s2"><h2>The Invocation</h2><pre class="big">./codeintel-code-complexity-analyzer [params]</pre><div class="callout"><h3>No Target Is Named</h3><p>This solitary usage line, the only one the README supplies, specifies no input file argument, no path placeholder, and no example target. That gap is declared here at the same size as the line itself.</p></div></section><div class="div"></div><section class="panel" id="s3"><h2>Three Parameters Only</h2><div class="entry"><b>-h</b><span>Shows the help message and exits.</span></div><div class="entry"><b class="rust">--threshold</b><span>Gives the complexity threshold for reporting functions and classes, and defaults to 10.</span></div><div class="entry"><b>--report-raw</b><span>No description provided.</span></div></section><div class="div"></div><section class="panel" id="s4"><h2>Over the Threshold and Reported</h2><p>Blocks reported are functions or classes whose complexity exceeds the threshold, identified alongside their true source line numbers. A run uncovering no block beyond the threshold prints a plain line stating so. No sample output, no invented function names, and no threshold table beyond the single default of 10 appears here, because the README provides none.</p><p>The README furnishes no worked example, no sample file, and no explanation of what --report-raw alters, so a reader cannot discover those matters from this page. That is stated openly here.</p><h2>Copyright</h2><pre>Copyright (c) ShadowStrikeHQ</pre><p>Quoted exactly as the README states it. The organisation fault is documented in DEFECTS in the README, not quietly corrected here.</p><p><a href="https://github.com/ShadowGuard-AI/codeintel-code-complexity-analyzer">The repository on GitHub</a></p></section>
 </main>
-<footer>
-  <p>Codeintel Code Complexity Analyzer is one of my projects. This page was written
-  from the repo itself on 2026-10-30: the counts are the
-  repo's counts, the code is the repo's code, and the gaps are the
-  repo's gaps.</p>
-</footer>
+<footer><p>Theme: The Lighthouse Lens Polishing Loft. Type: Barlow Semi Condensed for display, Barlow for reading, both SIL Open Font License 1.1. The lettering reference Black Great was reference only and is not embedded.</p></footer>
 </body>
 </html>
