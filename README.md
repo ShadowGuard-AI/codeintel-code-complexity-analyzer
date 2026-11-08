@@ -1,13 +1,13 @@
-![Loft with no lettering: nearest Fresnel pane on its trestle, panes in sequence on sail cream cloth, bench with tide table booklet and brass oil lantern, harbour through tall windows](intro-banner.png)
+![One oversize red apple close up at the end tray beside the last galvanised sizing ring, the line of rings soft behind it and the grader's hand at the frame edge](intro-banner.png)
 
 
 # codeintel-Code-Complexity-Analyzer
 
 Ship log treatment: every heading is a log entry in Barlow Semi Condensed in harbour blue on sail cream, ruled below, with a rope knot at major headings alone.
 
-![One Fresnel pane upright on a polishing trestle, folded cloth at its foot, unlit brass lantern set well aside, the heading plate](logo.png)
+![A drawn emblem of one red apple resting inside a galvanised steel sizing ring on white, the heading plate](logo.png)
 
-![Loft chamber with panes in sequence on sail cream cloth, bench at left with tide table booklet and brass oil lantern, and the title lettered on the plaster band above the bench](banner.png)
+![A packing shed sizing line where apples roll over a row of galvanised steel sizing rings, the standard fruit dropping away through the rings while the oversize roll on to the end tray where the grader counts them beside a yellow crate](banner.png)
 
 ![Loft in three depths: a distant gull crosses one window, daylight creeps across the ranked panes, and the corner of the folded cloth lifts in a draught and settles](scene.svg)
 
